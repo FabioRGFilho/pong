@@ -72,6 +72,189 @@
 
             bar1.css('margin-left', (leftM) + 'px');
             bar2.css('margin-left', (w - leftM - barW) + 'px');
+
+            startBall();
+
+            function startBall() {
+
+                ball.css("margin-left", w / 2 - rad / 2);
+                ball.css("margin-top", h / 2 - rad / 2);
+
+                var ang = Math.random() * (Math.PI / 180) * 45;
+                var sX = Math.round((Math.random())) * 2 - 1;
+                var sY = Math.round((Math.random())) * 2 - 1;
+
+
+                xSpd = Math.round(Math.cos(ang) * sX * ballSpd);
+                ySpd = Math.round(Math.sin(ang) * sY * ballSpd);
+
+            }
+
+
+            $(document).bind("keydown", clicked);
+            $(document).bind("keyup", released);
+
+            function clicked(e) {
+                var code = e.keyCode || e.which;
+
+
+                switch (code) {
+                    case 38:
+                        keys['r_up'] = true;
+                        break;
+                    case 40:
+                        keys['r_down'] = true;
+                        break;
+                    default:
+                        keys[String.fromCharCode(code)] = true;
+                        break;
+                }
+
+
+            }
+
+
+
+
+
+
+            function released(e) {
+                var code = e.keyCode || e.which;
+
+
+                switch (code) {
+                    case 38:
+                        keys['r_up'] = false;
+                        break;
+                    case 40:
+                        keys['r_down'] = false;
+                        break;
+                    default:
+                        keys[String.fromCharCode(code)] = false;
+                        break;
+                }
+
+
+            }
+
+            setInterval(update, updates);
+
+            function update() {
+
+                w = $("body").width();
+                h = $("body").height();
+                updateMoves();
+
+                updateBall();
+            }
+
+            function updateBall() {
+
+
+                var x = getX(ball);
+                var y = getY(ball);
+
+                ball.css("margin-left", x + xSpd);
+                ball.css("margin-top", y + ySpd);
+
+            }
+
+
+
+
+
+
+            function updateMoves() {
+                if (keys['W']) {
+                    var y = bar1.css("margin-top");
+                    y = y.replace("px", "");
+                    y = y - 0;
+
+                    if (y > 5)
+                        bar1.css("margin-top", y - 5);
+                }
+                if (keys['S']) {
+                    var y = bar1.css("margin-top");
+                    y = y.replace("px", "");
+                    y = y - 0;
+                    if (y + barH < h - 5)
+                        bar1.css("margin-top", y + 5);
+                }
+                if (keys['r_up']) {
+                    var y = bar2.css("margin-top");
+                    y = y.replace("px", "");
+                    y = y - 0;
+                    if (y > 5)
+                        bar2.css("margin-top", y - 5);
+                }
+                if (keys['r_down']) {
+                    var y = bar2.css("margin-top");
+                    y = y.replace("px", "");
+                    y = y - 0;
+                    if (y + barH < h - 5)
+                        bar2.css("margin-top", y + 5);
+                }
+                colide();
+            }
+
+            function getY(obj) {
+
+                return obj.css("margin-top").replace("px", "") - 0;
+
+            }
+
+            function getX(obj) {
+
+                return obj.css("margin-left").replace("px", "") - 0;
+            }
+            var insideL = false;
+            var insideR = false;
+            function colide() {
+
+                if (getX(ball) <= getX(bar1) + barW) {
+                    if (!insideL) {
+
+                        if (getY(ball) >= getY(bar1) - 5 && getY(ball) <= getY(bar1) + barH + 5) {
+                            insideL = true;
+                            xSpd = -xSpd;
+
+                            toc();
+                        }
+                    }
+                } else
+                    insideL = false;
+                if (getX(ball) + rad >= getX(bar2)) {
+                    if (!insideR) {
+                        if (getY(ball) >= getY(bar2) - 5 && getY(ball) <= getY(bar2) + barH + 5) {
+                            insideR = true;
+                            xSpd = -xSpd;
+                            toc();
+                        }
+                    }
+                } else
+                    insideR = false;
+                if (getX(ball) < 0) {
+                    point1++;
+                    $("#p1").html(point1);
+                    startBall();
+
+
+
+
+                }
+                if (getY(ball) < 0) {
+                    ySpd = -ySpd;
+                }
+                if (getX(ball) > w - 10) {
+                    point2++;
+                    $("#p2").html(point2);
+                    startBall();
+                }
+                if (getY(ball) > h - rad) {
+                    ySpd = -ySpd;
+                }
+
+            }
             </script>
     </body>
 </html>
