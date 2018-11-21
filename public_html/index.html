@@ -36,7 +36,7 @@
 
             var rad = 30;
 
-            var ballSpd = 10;
+            var ballSpd = 6;
 
             var xSpd;
             var ySpd;
@@ -209,8 +209,9 @@
             }
             var insideL = false;
             var insideR = false;
+            var waiting = false;
             function colide() {
-
+                if(waiting) return;
                 if (getX(ball) <= getX(bar1) + barW) {
                     if (!insideL) {
 
@@ -236,8 +237,8 @@
                 if (getX(ball) < 0) {
                     point1++;
                     $("#p1").html(point1);
-                    startBall();
-
+                    setTimeout(()=>{startBall(); waiting = false;},1000);
+                    waiting = true;
 
 
 
@@ -248,7 +249,8 @@
                 if (getX(ball) > w - 10) {
                     point2++;
                     $("#p2").html(point2);
-                    startBall();
+                    setTimeout(()=>{startBall(); waiting = false;},1000);
+                    waiting = true;
                 }
                 if (getY(ball) > h - rad) {
                     ySpd = -ySpd;
